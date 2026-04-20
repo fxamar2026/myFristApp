@@ -31,6 +31,8 @@ public class DatabaseManager {
         }
 
         try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
+            statement.execute("PRAGMA foreign_keys = ON");
+
             statement.execute("""
                     CREATE TABLE IF NOT EXISTS centers (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,6 +40,15 @@ public class DatabaseManager {
                         name_ar TEXT NOT NULL,
                         name_en TEXT,
                         active INTEGER NOT NULL DEFAULT 1,
+                        created_at TEXT NOT NULL
+                    );
+                    """);
+
+            statement.execute("""
+                    CREATE TABLE IF NOT EXISTS center_keys (
+                        center_code TEXT PRIMARY KEY,
+                        key_ref TEXT NOT NULL,
+                        encrypted_secret TEXT NOT NULL,
                         created_at TEXT NOT NULL
                     );
                     """);
@@ -57,6 +68,16 @@ public class DatabaseManager {
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         center_code TEXT NOT NULL,
                         file_name TEXT NOT NULL,
+                        status TEXT NOT NULL,
+                        created_at TEXT NOT NULL
+                    );
+                    """);
+
+            statement.execute("""
+                    CREATE TABLE IF NOT EXISTS export_batches (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        center_code TEXT NOT NULL,
+                        type TEXT NOT NULL,
                         status TEXT NOT NULL,
                         created_at TEXT NOT NULL
                     );
@@ -85,6 +106,24 @@ public class DatabaseManager {
                     """);
 
             statement.execute("""
+                    CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT NOT NULL UNIQUE,
+                        password_hash TEXT NOT NULL,
+                        active INTEGER NOT NULL DEFAULT 1,
+                        created_at TEXT NOT NULL
+                    );
+                    """);
+
+            statement.execute("""
+                    CREATE TABLE IF NOT EXISTS roles (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        role_name TEXT NOT NULL UNIQUE,
+                        description TEXT
+                    );
+                    """);
+
+            statement.execute("""
                     CREATE TABLE IF NOT EXISTS audit_log (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         event_type TEXT NOT NULL,
@@ -93,6 +132,7 @@ public class DatabaseManager {
                     );
                     """);
 
+            statement.execute("INSERT OR IGNORE INTO roles (id, role_name, description) VALUES (1, 'ADMIN', 'System administrator')");
             statement.execute("INSERT OR IGNORE INTO audit_log (id, event_type, details, created_at) VALUES (1, 'INIT', 'Database initialized', '" + Instant.now() + "')");
         } catch (SQLException e) {
             throw new RuntimeException("Unable to initialize database", e);

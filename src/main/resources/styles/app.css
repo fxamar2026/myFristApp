@@ -1,0 +1,18 @@
+.app-root {
+    -fx-background-color: linear-gradient(to bottom right, #f5f7ff, #eef1f8);
+}
+.app-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 700;
+}
+.app-root.dark {
+    -fx-background-color: linear-gradient(to bottom right, #1f2430, #151923);
+    -fx-text-fill: #e5e7eb;
+}
+.table-view {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.button {
+    -fx-background-radius: 8;
+}

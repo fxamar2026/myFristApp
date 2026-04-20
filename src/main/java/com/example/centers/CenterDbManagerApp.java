@@ -12,7 +12,9 @@ public class CenterDbManagerApp extends Application {
         AppContext context = AppContext.bootstrap();
         MainView mainView = new MainView(context);
 
-        Scene scene = new Scene(mainView.build(), 1200, 760);
+        Scene scene = new Scene(mainView.build(), 1280, 800);
+        scene.getStylesheets().add(getClass().getResource("/styles/app.css").toExternalForm());
+
         stage.setTitle("Center DB Manager");
         stage.setScene(scene);
         stage.show();

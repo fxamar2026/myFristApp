@@ -1,12 +1,13 @@
 # Center DB Manager (JavaFX + SQLite)
 
-هذا المشروع يمثل **المرحلة الأولى** من مخطط نظام إدارة قواعد المراكز:
+نسخة محدثة من المرحلة الأولى مع توجه **أقوى + أحدث**:
 
-- تهيئة مشروع JavaFX على Java 21 وGradle.
-- إنشاء قاعدة مركزية SQLite بشكل تلقائي.
-- توفير شاشة رئيسية حديثة (Dashboard + Centers + Import).
-- بناء وحدة إدارة المراكز (إضافة + عرض).
-- بناء وحدة استيراد تجريبية (تسجيل دفعة استيراد في staging).
+- واجهة JavaFX محسّنة (Dashboard + Centers + Import + Review/Merge).
+- تبديل اللغة الفوري (Arabic/English) مع RTL/LTR.
+- تبديل الوضع الليلي/النهاري.
+- Staging workflow: تسجيل دفعات الاستيراد + عرض المعلّق + اعتماد الدمج.
+- خدمة تشفير AES/GCM مبدئية لتغليف payload قبل دخوله staging.
+- مخطط قاعدة موسّع يشمل الجداول الأمنية والإدارية الأساسية.
 
 ## التشغيل
 
@@ -14,26 +15,23 @@
 gradle run
 ```
 
-> يمكن تعديل مسار القاعدة المركزية من `AppContext` (حاليًا: `data/central.db`).
+## الوحدات الحالية
 
-## ما تم تجهيزه
-
-- طبقة قاعدة البيانات: `DatabaseManager`
-- الكيانات الأساسية: `Center`
-- مستودع المراكز: `CenterRepository`
-- الخدمات:
+- Core bootstrap: `AppContext`, `DatabaseManager`
+- Services:
   - `CenterService`
   - `SequenceService`
   - `ImportService`
-- الواجهة:
+  - `MergeService`
+  - `CryptoService`
+- UI:
   - `MainView`
   - `DashboardView`
   - `CentersView`
   - `ImportView`
+  - `ReviewMergeView`
 
-## الخطوات التالية المقترحة
+## ملاحظات
 
-1. إضافة خدمة التشفير وفك التشفير (AES/GCM + إدارة مفاتيح).
-2. دعم مراجعة سجلات staging قبل الدمج النهائي.
-3. إضافة شاشة تدقيق وسجل عمليات متقدم.
-4. استكمال i18n وRTL/LTR وثيمات Dark/Light.
+- التشفير المطبق حاليًا تجهيزي لتدفق العمل، ويمكن ترقيته لاحقًا لدمج إدارة مفاتيح احترافية.
+- واجهة المراجعة/الدمج تعمل على السجلات `PENDING` وتدعم اعتمادها إلى `master_records` مع تسجيل `audit_log`.
